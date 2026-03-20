@@ -15,9 +15,16 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBooks(int pageSize, int pageNum)
+        public IActionResult GetBooks(int pageSize, int pageNum, string? sortOrder)
         {
-            var something = _bookContext.Books.Skip((pageNum - 1) * pageSize).Take(pageSize).ToList();
+            var query = _bookContext.Books.AsQueryable();
+
+            if (sortOrder == "asc")
+                query = query.OrderBy(b => b.Title);
+            else if (sortOrder == "desc")
+                query = query.OrderByDescending(b => b.Title);
+
+            var something = query.Skip((pageNum - 1) * pageSize).Take(pageSize).ToList();
             var totalNumBooks = _bookContext.Books.Count();
             return Ok(new
             {

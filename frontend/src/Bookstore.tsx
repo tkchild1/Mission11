@@ -7,12 +7,13 @@ function Bookstore() {
     const [pageSize, setPageSize] = useState(5);
     const [pageNumber, setPageNumber] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const [totalItems, setTotalItems] = useState(0);
+    const [sortOrder, setSortOrder] = useState("asc");
 
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await fetch(`https://localhost:7122/api/Book?pageSize=${pageSize}&pageNum=${pageNumber}`);                const data = await response.json();
+                const response = await fetch(`https://localhost:7122/api/Book?pageSize=${pageSize}&pageNum=${pageNumber}&sortOrder=${sortOrder}`);
+                const data = await response.json();
                 setBooks(data.books);
                 setTotalPages(Math.ceil(data.totalNumBooks / pageSize));
             } catch (error) {
@@ -20,12 +21,21 @@ function Bookstore() {
             }
         };
         fetchBooks();
-    }, [pageNumber, pageSize]);
+    }, [pageNumber, pageSize, sortOrder]);
     
     return (
         <>
-            <h1>Bookstore</h1>
-            <br />
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h1>Bookstore</h1>
+                <button 
+                    className="btn btn-outline-secondary" 
+                    onClick={() => {
+                        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                        setPageNumber(1);
+                    }}>
+                    Sort by Title {sortOrder === "asc" ? "↑" : "↓"}
+                </button>
+            </div>
             {books.map((book) => (
                 <div key={book.bookID} className="card mb-3">
                     <div className="card-body">
@@ -47,7 +57,10 @@ function Bookstore() {
                 <button className="btn btn-outline-primary" onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>Previous</button>
 
                 {[...Array(totalPages)].map((_, index) => (
-                    <button className="btn btn-outline-secondary" key={index} onClick={() => setPageNumber(index + 1)}>
+                    <button
+                        className={pageNumber === index + 1 ? "btn btn-primary" : "btn btn-outline-secondary"}
+                        key={index}
+                        onClick={() => setPageNumber(index + 1)}>
                         {index + 1}
                     </button>
                 ))}
@@ -57,7 +70,10 @@ function Bookstore() {
 
             <label>
                 Results per page:
-                <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+                <select value={pageSize} onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setPageNumber(1);
+                }}>
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="20">20</option>
@@ -66,4 +82,5 @@ function Bookstore() {
         </>
     );
 }
+
 export default Bookstore;
