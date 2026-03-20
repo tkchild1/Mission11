@@ -1,14 +1,16 @@
+// This component fetches and displays a paginated list of books from the backend API, with sorting and pagination controls.
 import { useEffect, useState } from "react";
 import type { Book } from "./types/Book";
 
 function Bookstore() {
-    
+    // State variables for books, pagination, and sorting
     const [books, setBooks] = useState<Book[]>([]);
     const [pageSize, setPageSize] = useState(5);
     const [pageNumber, setPageNumber] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [sortOrder, setSortOrder] = useState("asc");
 
+    // Fetch books from the API whenever page number, page size, or sort order changes
     useEffect(() => {
         const fetchBooks = async () => {
             try {
@@ -22,7 +24,7 @@ function Bookstore() {
         };
         fetchBooks();
     }, [pageNumber, pageSize, sortOrder]);
-    
+    // Render the bookstore UI
     return (
         <>
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -82,5 +84,5 @@ function Bookstore() {
         </>
     );
 }
-
+// Export the Bookstore component as the default export
 export default Bookstore;
