@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 
+// The CartPage component displays the items in the user's cart, allowing them to update quantities, remove items, clear the cart, and see the total price.
+
 function CartPage() {
     const navigate = useNavigate();
     const { cart, removeFromCart, updateQuantity, clearCart } = useCart();

@@ -4,6 +4,7 @@ import CategoryFilter from "../components/CategoryFilter";
 import BookList from "../components/Booklist";
 import CartSummary from "../components/CartSummary";
 
+// The main page that displays the list of books, category filters, and cart summary
 function BookListPage() {
 
     const [categories, setCategories] = useState<string[]>([]);

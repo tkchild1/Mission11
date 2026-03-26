@@ -1,6 +1,8 @@
 import React from "react";
 import type { CartItem } from "../types/CartItem";
 
+// The CartContext provides a global state for managing the shopping cart across the application. It includes functions to add, remove, and update items in the cart, as well as to clear the cart entirely.
+
 interface CartContextType {
     cart: CartItem[];
     addToCart: (item: CartItem) => void;
@@ -16,6 +18,8 @@ const CartContext = React.createContext<CartContextType>({
     updateQuantity: () => {},
     clearCart: () => {}
 });
+
+// The CartProvider component wraps the application and provides the cart state and functions to its children components.
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const [cart, setCart] = React.useState<CartItem[]>([]);

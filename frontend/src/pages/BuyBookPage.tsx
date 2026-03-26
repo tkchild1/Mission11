@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router";
 import type { CartItem } from "../types/CartItem";
 import WelcomeBand from "../components/WelcomeBand";
 
+// The BuyBookPage component allows users to specify the quantity of a book they want to purchase and add it to their cart.
+
 function BuyBookPage() {
     const navigate = useNavigate();
     const { title, bookId, price } = useParams<{ title: string; bookId: string; price: string }>();
@@ -20,7 +22,7 @@ function BuyBookPage() {
         addToCart(newItem);
         navigate("/cart");
     }
-
+    // Render the book details and quantity input, along with buttons to add to cart and continue shopping.
     return (
         <>
         <WelcomeBand />
