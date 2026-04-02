@@ -12,7 +12,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<BookstoreContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BookstoreConnection")));
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000", "https://jolly-coast-00c215210.4.azurestaticapps.net")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        })
+);
 
 var app = builder.Build();
 
@@ -22,7 +30,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors(xxx => xxx.WithOrigins("http://localhost:3000"));
+app.UseCors("AllowReactApp");
 
 app.UseHttpsRedirection();
 

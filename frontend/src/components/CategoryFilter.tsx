@@ -9,7 +9,7 @@ function CategoryFilter({ selectedCategories, onCheckBoxChange }: { selectedCate
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch(`https://localhost:7122/api/Book/GetCategories`);
+                const response = await fetch(`https://book-backend-h0ckc4a8czdma0e9.francecentral-01.azurewebsites.net/api/Book/GetCategories`);
                 const data = await response.json();
                 setCategories(data);
             } catch (error) {

@@ -49,5 +49,41 @@ namespace WebApplication1.Controllers
 
             return Ok(bookCategories);
         }
+
+        [HttpPost("AddBook")]
+        public IActionResult AddBook(Book newBook)
+        {
+            _bookContext.Books.Add(newBook);
+            _bookContext.SaveChanges();
+            return Ok(newBook);
+        }
+
+        [HttpPut("UpdateBook/{id}")]
+        public IActionResult UpdateBook(int id, Book updatedBook)
+        {
+            var book = _bookContext.Books.Find(id);
+            if (book == null)
+                return NotFound();
+
+            book.Title = updatedBook.Title;
+            book.Author = updatedBook.Author;
+            book.Category = updatedBook.Category;
+            book.Price = updatedBook.Price;
+
+            _bookContext.SaveChanges();
+            return Ok(book);
+        }
+
+        [HttpDelete("DeleteBook/{id}")]
+        public IActionResult DeleteBook(int id)
+        {
+            var book = _bookContext.Books.Find(id);
+            if (book == null)
+                return NotFound();
+
+            _bookContext.Books.Remove(book);
+            _bookContext.SaveChanges();
+            return Ok(book);
+        }
     }
 }

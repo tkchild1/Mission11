@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Book } from "../types/Book";
 import { useNavigate } from "react-router-dom";
+import { fetchBooks } from "../api/BooksAPI";
+import Pagination from "./Pagination";
 
 function BookList({ selectedCategories }: { selectedCategories: string[] }) {
     // State variables for books, pagination, and sorting
@@ -14,13 +16,10 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
 
     // Fetch books from the API whenever page number, page size, or sort order changes
     useEffect(() => {
-        const fetchBooks = async () => {
+        const loadBooks = async () => {
             setIsLoading(true);
-            const categoryParams = selectedCategories.map(c => `bookCategories=${encodeURIComponent(c)}`).join('&');
-
             try {
-                const response = await fetch(`https://localhost:7122/api/Book?pageSize=${pageSize}&pageNum=${pageNumber}&sortOrder=${sortOrder}${categoryParams ? `&${categoryParams}` : ''}`);
-                const data = await response.json();
+                const data = await fetchBooks(pageNumber, pageSize, sortOrder, selectedCategories);
                 setBooks(data.books);
                 setTotalPages(Math.ceil(data.totalNumBooks / pageSize));
             } catch (error) {
@@ -29,7 +28,7 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
                 setIsLoading(false);
             }
         };
-        fetchBooks();
+        loadBooks();
     }, [pageNumber, pageSize, sortOrder, selectedCategories]);
 
     // Reset to page 1 whenever the selected category changes
@@ -80,32 +79,16 @@ function BookList({ selectedCategories }: { selectedCategories: string[] }) {
                 </>
             )}
 
-            <div className="d-flex gap-2 my-3">
-                <button className="btn btn-outline-primary" onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber === 1}>Previous</button>
-
-                {[...Array(totalPages)].map((_, index) => (
-                    <button
-                        className={pageNumber === index + 1 ? "btn btn-primary" : "btn btn-outline-secondary"}
-                        key={index}
-                        onClick={() => setPageNumber(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
-
-                <button className="btn btn-outline-primary" onClick={() => setPageNumber(pageNumber + 1)} disabled={pageNumber === totalPages}>Next</button>
-            </div>
-
-            <label>
-                Results per page:
-                <select value={pageSize} onChange={(e) => {
-                    setPageSize(Number(e.target.value));
+            <Pagination
+                currentPage={pageNumber}
+                totalPages={totalPages}
+                onPageChange={(page) => setPageNumber(page)}
+                pageSize={pageSize}
+                onPageSizeChange={(size) => {
+                    setPageSize(size);
                     setPageNumber(1);
-                }}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                </select>
-            </label>
+                }}
+            />
         </>
     );
 }
